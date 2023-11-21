@@ -1,0 +1,42 @@
+.pokemonList {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.pokemonCard {
+  padding: 10px; 
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin: 10px;
+  width: 150px;
+  text-align: center;
+}
+
+.pokemonCard img {
+  width: 120px;
+  height: 120px;
+}
+
+.InBattle
+{
+  color: red;
+  display: inline;
+}
+
+.button {
+  padding: 5px 10px;
+  border: none;
+  border-radius: 5px;
+  margin: 0 5px; 
+  cursor: pointer;
+}
+
+.button:hover {
+  background: #eee;  
+}
+
+.button:disabled
+{
+  background: #ddd;
+  cursor: not-allowed;
+}

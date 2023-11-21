@@ -1,0 +1,30 @@
+.BattleArena 
+{
+    padding: 10px; 
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin: 10px;
+    width: 90%;
+}
+
+.Pokemon
+{
+    padding: 10px; 
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin: 10px;
+    width: 200px;
+    height: 250px;
+}
+
+.button 
+{
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.button:hover 
+{
+    background: #eee;  
+}

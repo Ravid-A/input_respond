@@ -1,0 +1,18 @@
+.pokemonInfo {
+    border: 1px solid #333;
+    padding: 10px;
+    border-radius: 5px; 
+    margin-top: 10px;
+  }
+
+  .button {
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    margin: 0 5px; 
+    cursor: pointer;
+  }
+  
+  .button:hover {
+    background: #eee;  
+  }
