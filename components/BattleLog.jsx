@@ -26,6 +26,6 @@ export default function BattleLog({log}) {
     }).reverse();
 
     return (
-        <textarea className={styles.BattleLog} disabled = {true} value={logText.join('\n')}  />
+        <textarea className={styles.BattleLog} disabled = {true} value={logText.join('\n')} />
     );
 };
