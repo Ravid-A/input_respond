@@ -2,13 +2,12 @@ import styles from '../styles/BattleLog.module.css';
 
 export default function BattleLog({log}) {
 
-    //Pikachu attacked Rattata using Static ability with Rage and made 10 damage
-    //Pikachu attacked Rattata using Static ability but Rattata dodged
+    let current_log = 1;
 
     const logText = log.map((logItem, index) => {
         const {attacker, target, attack, damage, dodge, rage} = logItem;
 
-        let logText = `${attacker.name} attacked ${target.name} using ${attack.name} ability`;
+        let logText = `${current_log++}) ${attacker.name} attacked ${target.name} using ${attack.name} ability`;
 
         if(rage)
         {

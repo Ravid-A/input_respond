@@ -12,12 +12,6 @@
   height: 120px;
 }
 
-.InBattle
-{
-  color: red;
-  display: inline;
-}
-
 .button {
   padding: 5px 10px;
   border: none;
@@ -28,10 +22,4 @@
 
 .button:hover {
   background: #eee;  
-}
-
-.button:disabled
-{
-  background: #ddd;
-  cursor: not-allowed;
 }

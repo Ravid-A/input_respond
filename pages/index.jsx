@@ -2,10 +2,7 @@ import { useState, useReducer } from "react";
 import {pokemons} from "../data/pokemons";
 
 import PokemonList from "../components/PokemonList";
-import PokemonCard from "../components/PokemonCard";
-import BattleLog from "../components/BattleLog";
-
-import styles from "../styles/index.module.css";
+import BattleArena from "../components/BattleArena";
 
 import logReducer from "../utils/logReducer";
 
@@ -18,10 +15,7 @@ function get_damage(damage)
 
 export default function Home() {
 
-    const [selectedPokemon, setSelectedPokemon] = useState({
-        pokemon1: null,
-        pokemon2: null,
-    });
+    const [selectedPokemon, setSelectedPokemon] = useState({pokemon1: null, pokemon2: null});
 
     const [status, setStatus] = useState("prepare");
     const [current_turn, setCurrentTurn] = useState(0);
@@ -46,16 +40,16 @@ export default function Home() {
         }
     }
 
-    function handleAttack(pokemon, index) 
+    function handleAttack(pokemon) 
     {
         const damage = get_damage(pokemon.attack.damage);
         const dodge = Math.random() < 0.25;
         
-        const target = (index === 0 ? selectedPokemon.pokemon2 : selectedPokemon.pokemon1);
+        const target = (current_turn === 0 ? selectedPokemon.pokemon2 : selectedPokemon.pokemon1);
 
         if(!dodge)
         {
-            updatePokemon(target, index, damage);
+            updatePokemon(target, current_turn, damage);
         }
 
         setCurrentTurn((current_turn + 1) % 2);
@@ -71,17 +65,17 @@ export default function Home() {
         });
     }
 
-    function handleRage(pokemon, index) 
+    function handleRage(pokemon) 
     {
         const damage = get_damage(pokemon.attack.damage) * 2;
 
         const dodge = Math.random() < 0.5;
 
-        const target = (index === 0 ? selectedPokemon.pokemon2 : selectedPokemon.pokemon1);
+        const target = (current_turn === 0 ? selectedPokemon.pokemon2 : selectedPokemon.pokemon1);
 
         if(!dodge)
         {
-            updatePokemon(target, index, damage);
+            updatePokemon(target, current_turn, damage);
         }
 
         setCurrentTurn((current_turn + 1) % 2);
@@ -144,64 +138,21 @@ export default function Home() {
 
     return (
         <>
-            <div>
-                <PokemonList pokemons={pokemons} onSelect={handleSelect}/>
+            <PokemonList 
+                pokemons={pokemons} 
+                onSelect={handleSelect}
+            />
 
-                <div className={styles.BattleArena}>
-                    <div style={{
-                        display: 'flex'
-                    }}>
-                        <div className={styles.Pokemon}>
-                            {selectedPokemon.pokemon1 && (
-                                <PokemonCard 
-                                    pokemon={selectedPokemon.pokemon1}
-                                    onAttack={handleAttack}
-                                    onRage={handleRage}
-                                    index = {0}
-                                    current_turn = {current_turn}
-                                    isBattleStarted = {status === "start"}
-                                />
-                            )}
-                        </div>
-                        <BattleLog log={log}/>
-                        <div className={styles.Pokemon}>
-                            {selectedPokemon.pokemon2 && (
-                                <PokemonCard 
-                                    pokemon={selectedPokemon.pokemon2}
-                                    onAttack={handleAttack}
-                                    onRage={handleRage}
-                                    index = {1}
-                                    current_turn = {current_turn}
-                                    isBattleStarted = {status === "start"}
-                                />
-                            )}
-                        </div>
-                    </div>
-                    <div style={{
-                        display: (status !== "prepare") ? 'block' : 'none',
-                        textAlign: 'center',
-                    }}>
-                            {status !== "end" && (
-                                <button 
-                                    className={styles.button}
-                                    onClick={() => setStatus("start")}
-                                    disabled={status === "start"}
-                                >
-                                    Start Battle
-                                </button>
-                            )}
-
-                            {status === "end" && (
-                                <button 
-                                    className={styles.button}
-                                    onClick={handleRefresh}
-                                >
-                                    Refresh
-                                </button>
-                            )}
-                    </div>
-                </div>
-            </div>
+            <BattleArena 
+                selectedPokemon={selectedPokemon} 
+                log={log} 
+                status={status}
+                setStatus={setStatus}
+                handleAttack={handleAttack} 
+                handleRage={handleRage} 
+                handleRefresh={handleRefresh} 
+                current_turn={current_turn}
+            />
         </>
     );
 };

@@ -4,6 +4,7 @@
     border-radius: 5px;
     margin: 10px;
     width: 1300px;
-    height: 250px;
+    height: 266px;
     overflow:auto;
+    resize: none;
 }

@@ -1,34 +1,37 @@
-import styles from '../styles/PokemonCard.module.css'
+import PokemonInfo from "./PokemonInfo"
 
-export default function PokemonCard({pokemon, onAttack, onRage, index, current_turn, isBattleStarted}) {
+import styles from '../styles/PokemonCard.module.css';
 
+export default function PokemonCard({pokemon, onSelect, selectedPokemon, handleInfo, handleCloseInfo})
+{
     return (
-        <div key={pokemon.name} className={styles.pokemonCard}>
+        <div className={styles.pokemonCard}>
             <img src={pokemon.imgLink} alt={pokemon.name}/>
-            <div>{pokemon.name}</div>
-            <div>HP: {pokemon.hp} HP</div>
+            <div>{pokemon.name} {onSelect && pokemon.isInBattle && <div className={styles.InBattle}>(In Battle)</div>}</div>
 
             <button 
-                className={styles.button}
-                style={
-                    isBattleStarted ? {display: ''} : {display: 'none'}
-                }
-                onClick={() => onAttack(pokemon, index)} 
-                disabled={current_turn !== index} 
+                className={styles.button} 
+                disabled={selectedPokemon === pokemon} 
+                onClick={() => handleInfo(pokemon)}
             >
-            Attack
+                Info
             </button>
 
             <button 
                 className={styles.button}
-                style={
-                    isBattleStarted ? {display: ''} : {display: 'none'}
-                }
-                onClick={() => onRage(pokemon, index)}  
-                disabled={current_turn !== index}
+                disabled={pokemon.isInBattle}
+                onClick={() => onSelect(pokemon)}  
             >
-            Rage
+            Select
             </button>
+
+            {selectedPokemon === pokemon && (
+            <PokemonInfo 
+                hp={pokemon.hp}
+                attack={pokemon.attack} 
+                onClose={handleCloseInfo}
+            />
+            )}
         </div>
     )
 }
