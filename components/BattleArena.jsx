@@ -1,13 +1,107 @@
+import { useReducer, useState } from 'react';
+
 import BattleLog from './BattleLog';
 import BattleCard from './BattleCard';
 
+import logReducer from "../utils/logReducer";
+
 import styles from '../styles/BattleArena.module.css';
 
-export default function BattleArena({selectedPokemon, log, status, setStatus, handleAttack, handleRage, handleRefresh, current_turn})
+function get_damage(damage) 
 {
+    const {low, high} = damage;
+
+    return Math.floor(Math.random() * (high - low + 1) + low);
+}
+
+export default function BattleArena({pokemons, selectedPokemon, setSelectedPokemon, status, setStatus})
+{
+    const [current_turn, setCurrentTurn] = useState(0);
+
+    const [log, dispatch] = useReducer(logReducer, []);
+
+    function handleAttack(pokemon, rage = false) 
+    {
+        const damage = get_damage(pokemon.attack.damage) * (rage ? 2 : 1);
+        const dodge = Math.random() < (rage ? 0.25 : 0.5);
+        
+        const target = (current_turn === 0 ? selectedPokemon.pokemon2 : selectedPokemon.pokemon1);
+
+        if(!dodge)
+        {
+            updatePokemon(target, damage);
+        }
+
+        setCurrentTurn((current_turn + 1) % 2);
+
+        dispatch({
+            type: "add",
+            attacker: pokemon,
+            target: target,
+            attack: pokemon.attack,
+            damage: damage,
+            dodge: dodge,
+            rage: rage,
+        });
+    }
+
+    function updatePokemon(target, damage)
+    {
+        const winner = (current_turn === 0 ? selectedPokemon.pokemon1 : selectedPokemon.pokemon2);
+        
+        const new_hp = target.hp - damage;
+        target.hp = (new_hp < 0 ? 0 : new_hp);
+        if(current_turn === 0)
+        {
+            setSelectedPokemon({
+                ...selectedPokemon,
+                pokemon2: target
+            });
+        } else {
+            setSelectedPokemon({
+                ...selectedPokemon,
+                pokemon1: target
+            });
+        }
+
+        if(target.hp === 0)
+        {
+            document.getElementById("pokename").innerHTML = winner.name;
+            setStatus("end");
+            return;
+        }
+    }
+
+    function handleRefresh()
+    {
+        pokemons.map((pokemon) => {
+            pokemon.isInBattle = false;
+            return pokemon;
+        });
+
+        setSelectedPokemon({
+            pokemon1: null,
+            pokemon2: null,
+        });
+
+        setCurrentTurn(0);
+
+        dispatch({
+            type: "reset",
+        });
+
+        document.getElementById("pokename").innerHTML = "";
+
+        setStatus("prepare");
+    }
 
     return (
         <div className={styles.BattleArena}>
+            <h1 style={{
+                display: (status === "end") ? 'block' : 'none',
+                textAlign: 'center',
+                color: 'green',
+            }}><span id="pokename"></span> Won The Battle!</h1>
             <div style={{
                 display: 'flex'
             }}>
@@ -16,7 +110,6 @@ export default function BattleArena({selectedPokemon, log, status, setStatus, ha
                         <BattleCard 
                             pokemon={selectedPokemon.pokemon1}
                             onAttack={handleAttack}
-                            onRage={handleRage}
                             fighting={current_turn == 0}
                             isBattleStarted = {status === "start"}
                         />
@@ -28,7 +121,6 @@ export default function BattleArena({selectedPokemon, log, status, setStatus, ha
                         <BattleCard 
                             pokemon={selectedPokemon.pokemon2}
                             onAttack={handleAttack}
-                            onRage={handleRage}
                             fighting={current_turn==1}
                             isBattleStarted = {status === "start"}
                         />

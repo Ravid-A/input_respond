@@ -1,6 +1,6 @@
 import styles from '../styles/BattleCard.module.css'
 
-export default function PokemonCard({pokemon, onAttack, onRage, fighting, isBattleStarted}) {
+export default function PokemonCard({pokemon, onAttack, fighting, isBattleStarted}) {
 
     return (
         <div key={pokemon.name} className={styles.pokemonCard}>
@@ -24,7 +24,7 @@ export default function PokemonCard({pokemon, onAttack, onRage, fighting, isBatt
                 style={
                     isBattleStarted ? {display: ''} : {display: 'none'}
                 }
-                onClick={() => onRage(pokemon)}  
+                onClick={() => onAttack(pokemon, true)}  
                 disabled={!fighting}
             >
             Rage
