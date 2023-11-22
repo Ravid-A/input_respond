@@ -29,7 +29,7 @@ export default function BattleArena({pokemons, selectedPokemon, setSelectedPokem
 
         if(!dodge)
         {
-            updatePokemon(target, damage);
+            updatePokemon(target.hp, damage);
         }
 
         setCurrentTurn((current_turn + 1) % 2);
@@ -45,26 +45,31 @@ export default function BattleArena({pokemons, selectedPokemon, setSelectedPokem
         });
     }
 
-    function updatePokemon(target, damage)
+    function updatePokemon(hp, damage)
     {
         const winner = (current_turn === 0 ? selectedPokemon.pokemon1 : selectedPokemon.pokemon2);
         
-        const new_hp = target.hp - damage;
-        target.hp = (new_hp < 0 ? 0 : new_hp);
+        const new_hp = Math.max(hp - damage, 0);
         if(current_turn === 0)
         {
             setSelectedPokemon({
                 ...selectedPokemon,
-                pokemon2: target
+                pokemon2: {
+                    ...selectedPokemon.pokemon2,
+                    hp: new_hp
+                }
             });
         } else {
             setSelectedPokemon({
                 ...selectedPokemon,
-                pokemon1: target
+                pokemon1: {
+                    ...selectedPokemon.pokemon1,
+                    hp: new_hp
+                }
             });
         }
 
-        if(target.hp === 0)
+        if(new_hp === 0)
         {
             document.getElementById("pokename").innerHTML = winner.name;
             setStatus("end");
