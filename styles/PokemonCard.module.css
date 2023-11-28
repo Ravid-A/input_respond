@@ -12,10 +12,17 @@
   height: 120px;
 }
 
+.pokemonCard div
+{
+  font-size: 14px;
+  font-weight: bold;  
+}
+
 .InBattle
 {
   color: red;
   display: inline;
+  font-weight: normal;
 }
 
 .button {
@@ -24,6 +31,8 @@
   border-radius: 5px;
   margin: 0 5px; 
   cursor: pointer;
+  font-size: 16px;
+  font-weight: bolder;
 }
 
 .button:hover {

@@ -7,4 +7,6 @@
     height: 266px;
     overflow:auto;
     resize: none;
+    font-size: 18px;
+    font-weight: bolder;
 }

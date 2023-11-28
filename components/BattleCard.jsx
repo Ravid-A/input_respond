@@ -22,7 +22,6 @@ export default function BattleCard({index}) {
 
 function CardData(pokemon, fighting)
 {
-    const selectedPokemons = useSelectedPokemons();
     const current_turn = useCurrentTurn();
 
     const dispatch = useLogDispatch();
@@ -44,9 +43,18 @@ function CardData(pokemon, fighting)
     return (
         <>
             <img src={pokemon.imgLink} alt={pokemon.name}/>
-            <div>{pokemon.name}</div>
-            <div>HP: {pokemon.hp} HP</div>
-
+            <div
+                className={styles.name}
+            >
+                {pokemon.name}
+            </div>
+            <div className={styles.healthbar}>
+            <div 
+                className={styles.health}
+                style={{width: `${pokemon.hp}%`}} 
+            />
+            </div>
+        
             <button 
                 className={styles.button}
                 style={
@@ -57,7 +65,6 @@ function CardData(pokemon, fighting)
             >
             Attack
             </button>
-
             <button 
                 className={styles.button}
                 style={

@@ -12,7 +12,7 @@ export default function PokemonCard({pokemon})
     const setPokemonInfo = useSetPokemonInfo();
 
     const selectedPokemons = useSelectedPokemons();
-    
+
     const dispatch = useLogDispatch();
 
     function onSelect(pokemon)

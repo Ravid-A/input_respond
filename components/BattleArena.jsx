@@ -60,7 +60,7 @@ function BattleControl()
                     <button 
                         className={styles.button}
                         onClick={handleStart}
-                        disabled={status === "battle"}
+                        disabled={status === "start"}
                     >
                         Start Battle
                     </button>
