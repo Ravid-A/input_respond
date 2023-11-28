@@ -1,32 +1,24 @@
 import {useState} from 'react';
 import PokemonCard from './PokemonCard';
 
+import { PokemonInfoProvider } from '../utils/Contexts/pokemonInfoContext';
+
 import styles from '../styles/PokemonList.module.css';
 
-export default function PokemonList({pokemons, onSelect}) {
+export default function PokemonList({pokemons}) {
 
-    const [selectedPokemon, setSelectedPokemon] = useState(null);
-
-    function handleInfo(pokemon) {
-        setSelectedPokemon(pokemon);
-    }
-
-    function handleCloseInfo() {
-        setSelectedPokemon(null);
-    }
-
+    const [pokemonInfo, setPokemonInfo] = useState(null);
+    
     return (
-    <div className={styles.pokemonList}>
-        {pokemons.map(pokemon => (
-           <PokemonCard 
-                key={pokemon.name}
-                pokemon={pokemon}
-                onSelect={onSelect}
-                selectedPokemon={selectedPokemon}
-                handleInfo={handleInfo}
-                handleCloseInfo={handleCloseInfo}
-            />
-        ))}
-    </div>
+        <PokemonInfoProvider pokemonInfo = {pokemonInfo}  setPokemonInfo={setPokemonInfo}>
+            <div className={styles.pokemonList}>
+                {pokemons.map(pokemon => (
+                <PokemonCard 
+                        key={pokemon.name}
+                        pokemon={pokemon}
+                    />
+                ))}
+            </div>
+        </PokemonInfoProvider>
     );
 }

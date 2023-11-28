@@ -5,6 +5,9 @@ import BattleCard from './BattleCard';
 
 import logReducer from "../utils/logReducer";
 
+import { useSelectedPokemons, useSetSelectedPokemons } from '../utils/Contexts/selectedPokemonsContext.js';
+import { useStatus, useSetStatus } from "../utils/Contexts/statusContext.js";
+
 import styles from '../styles/BattleArena.module.css';
 
 function get_damage(damage) 
@@ -14,8 +17,14 @@ function get_damage(damage)
     return Math.floor(Math.random() * (high - low + 1) + low);
 }
 
-export default function BattleArena({pokemons, selectedPokemon, setSelectedPokemon, status, setStatus})
+export default function BattleArena({pokemons})
 {
+    const selectedPokemons = useSelectedPokemons();
+    const setSelectedPokemons = useSetSelectedPokemons();
+
+    const status = useStatus();
+    const setStatus = useSetStatus();
+
     const [current_turn, setCurrentTurn] = useState(0);
 
     const [log, dispatch] = useReducer(logReducer, []);
@@ -25,19 +34,19 @@ export default function BattleArena({pokemons, selectedPokemon, setSelectedPokem
         const damage = get_damage(pokemon.attack.damage) * (rage ? 2 : 1);
         const dodge = Math.random() < (rage ? 0.25 : 0.5);
         
-        const target = (current_turn === 0 ? selectedPokemon.pokemon2 : selectedPokemon.pokemon1);
+        const target_index = (current_turn + 1) % 2;
 
         if(!dodge)
         {
-            updatePokemon(target.hp, damage);
+            updatePokemon(target_index, damage);
         }
 
-        setCurrentTurn((current_turn + 1) % 2);
+        setCurrentTurn(target_index);
 
         dispatch({
             type: "add",
             attacker: pokemon,
-            target: target,
+            target: selectedPokemons[target_index],
             attack: pokemon.attack,
             damage: damage,
             dodge: dodge,
@@ -45,33 +54,22 @@ export default function BattleArena({pokemons, selectedPokemon, setSelectedPokem
         });
     }
 
-    function updatePokemon(hp, damage)
+    function updatePokemon(target_index, damage)
     {
-        const winner = (current_turn === 0 ? selectedPokemon.pokemon1 : selectedPokemon.pokemon2);
-        
-        const new_hp = Math.max(hp - damage, 0);
-        if(current_turn === 0)
-        {
-            setSelectedPokemon({
-                ...selectedPokemon,
-                pokemon2: {
-                    ...selectedPokemon.pokemon2,
-                    hp: new_hp
-                }
-            });
-        } else {
-            setSelectedPokemon({
-                ...selectedPokemon,
-                pokemon1: {
-                    ...selectedPokemon.pokemon1,
-                    hp: new_hp
-                }
-            });
-        }
+        const target = selectedPokemons[target_index];
+
+        const new_hp = Math.max(target.hp - damage, 0);
+
+        selectedPokemons[target_index] = {
+            ...selectedPokemons[target_index],
+            hp: new_hp,
+        };
+
+        setSelectedPokemons([...selectedPokemons]);
 
         if(new_hp === 0)
         {
-            document.getElementById("pokename").innerHTML = winner.name;
+            document.getElementById("pokename").innerHTML = selectedPokemons[current_turn].name;
             setStatus("end");
             return;
         }
@@ -79,15 +77,7 @@ export default function BattleArena({pokemons, selectedPokemon, setSelectedPokem
 
     function handleRefresh()
     {
-        pokemons.map((pokemon) => {
-            pokemon.isInBattle = false;
-            return pokemon;
-        });
-
-        setSelectedPokemon({
-            pokemon1: null,
-            pokemon2: null,
-        });
+        setSelectedPokemons([]);
 
         setCurrentTurn(0);
 
@@ -111,9 +101,9 @@ export default function BattleArena({pokemons, selectedPokemon, setSelectedPokem
                 display: 'flex'
             }}>
                 <div className={styles.Pokemon}>
-                    {selectedPokemon.pokemon1 && (
+                    {selectedPokemons[0] && (
                         <BattleCard 
-                            pokemon={selectedPokemon.pokemon1}
+                            pokemon={selectedPokemons[0]}
                             onAttack={handleAttack}
                             fighting={current_turn == 0}
                             isBattleStarted = {status === "start"}
@@ -122,9 +112,9 @@ export default function BattleArena({pokemons, selectedPokemon, setSelectedPokem
                 </div>
                 <BattleLog log={log}/>
                 <div className={styles.Pokemon}>
-                    {selectedPokemon.pokemon2 && (
+                    {selectedPokemons[1] && (
                         <BattleCard 
-                            pokemon={selectedPokemon.pokemon2}
+                            pokemon={selectedPokemons[1]}
                             onAttack={handleAttack}
                             fighting={current_turn==1}
                             isBattleStarted = {status === "start"}

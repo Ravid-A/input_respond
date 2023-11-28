@@ -1,13 +1,17 @@
+import { useSetPokemonInfo } from '../utils/Contexts/pokemonInfoContext';
+
 import styles from '../styles/PokemonInfo.module.css';
 
 export default function PokemonInfo({hp, attack, onClose}) 
 {
+    const setPokemonInfo = useSetPokemonInfo();
+
     return (
     <div className={styles.pokemonInfo}>
         <div>HP: {hp}</div>
         <div>Attack: {attack.name}</div>
         <div>Damage: {attack.damage.low} - {attack.damage.high}</div>
-        <button className={styles.button} onClick={onClose}>Close</button>
+        <button className={styles.button} onClick={() => {setPokemonInfo(null)}}>Close</button>
     </div>
     );
 }
