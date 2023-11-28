@@ -13,7 +13,6 @@ export default function logReducer(log, action) {
                     rage: action.rage,
                 },
             ];
-            break;
         } 
         case "reset":
         {
