@@ -1,8 +1,8 @@
 import PokemonInfo from "./PokemonInfo"
 
-import { usePokemonInfo, useSetPokemonInfo } from "../utils/Contexts/pokemonInfoContext.js";
-import { useSelectedPokemons ,useSetSelectedPokemons } from "../utils/Contexts/selectedPokemonsContext.js";
-import { useSetStatus } from "../utils/Contexts/statusContext.js";
+import { usePokemonInfo, useSetPokemonInfo } from "../utils/pokemonInfoContext.js";
+import { useSelectedPokemons  } from "../utils/selectedPokemonsContext.js";
+import { useLogDispatch } from "../utils/battleReducerContext.js";
 
 import styles from '../styles/PokemonCard.module.css';
 
@@ -12,17 +12,21 @@ export default function PokemonCard({pokemon})
     const setPokemonInfo = useSetPokemonInfo();
 
     const selectedPokemons = useSelectedPokemons();
-    const setSelectedPokemons = useSetSelectedPokemons();
-
-    const setStatus = useSetStatus();
+    
+    const dispatch = useLogDispatch();
 
     function onSelect(pokemon)
     {
-        if(selectedPokemons.length < 2) {
-            setSelectedPokemons([...selectedPokemons, pokemon]);
-            if(selectedPokemons.length === 1) {
-                setStatus("battle");
-            }
+        dispatch({
+            type: "select",
+            pokemon: pokemon,
+        });
+
+        if(selectedPokemons.length === 1)
+        {
+            dispatch({
+                type: "ready",
+            });
         }
     }
 

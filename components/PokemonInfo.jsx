@@ -1,4 +1,4 @@
-import { useSetPokemonInfo } from '../utils/Contexts/pokemonInfoContext';
+import { useSetPokemonInfo } from '../utils/pokemonInfoContext';
 
 import styles from '../styles/PokemonInfo.module.css';
 

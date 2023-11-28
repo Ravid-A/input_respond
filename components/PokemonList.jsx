@@ -1,7 +1,7 @@
 import {useState} from 'react';
 import PokemonCard from './PokemonCard';
 
-import { PokemonInfoProvider } from '../utils/Contexts/pokemonInfoContext';
+import { PokemonInfoProvider } from '../utils/pokemonInfoContext';
 
 import styles from '../styles/PokemonList.module.css';
 

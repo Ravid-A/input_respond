@@ -1,17 +1,48 @@
-import { useSelectedPokemons } from '../utils/Contexts/selectedPokemonsContext';
-import { useCurrentTurn } from '../utils/Contexts/currentTurnContext';
+import { useSelectedPokemons } from '../utils/selectedPokemonsContext';
+import { useCurrentTurn } from '../utils/currentTurnContext';
+import { useLogDispatch } from '../utils/battleReducerContext';
+import { useStatus } from '../utils/statusContext';
 
 import styles from '../styles/BattleCard.module.css'
 
-export default function PokemonCard({pokemon, onAttack, isBattleStarted}) {
+export default function BattleCard({index}) {
 
     const selectedPokemons = useSelectedPokemons();
-    const currentTurn = useCurrentTurn();
+    const current_turn = useCurrentTurn();
 
-    const fighting = selectedPokemons[currentTurn] === pokemon;
+    const pokemon = selectedPokemons[index];
+    const fighting = selectedPokemons[current_turn] === pokemon;
 
     return (
-        <div key={pokemon.name} className={styles.pokemonCard}>
+        <div className={styles.pokemonCard}>
+            {selectedPokemons.length > index && CardData(pokemon, fighting)}
+        </div>
+    )
+}
+
+function CardData(pokemon, fighting)
+{
+    const selectedPokemons = useSelectedPokemons();
+    const current_turn = useCurrentTurn();
+
+    const dispatch = useLogDispatch();
+    const status = useStatus();
+
+    const isBattleStarted = status === "start";
+
+    function onAttack(pokemon, rage=false)
+    {
+        const target_index = (current_turn + 1) % 2;
+        dispatch({
+            type: "attack",
+            pokemon: pokemon,
+            rage: rage,
+            target_index: target_index,
+        });
+    }
+
+    return (
+        <>
             <img src={pokemon.imgLink} alt={pokemon.name}/>
             <div>{pokemon.name}</div>
             <div>HP: {pokemon.hp} HP</div>
@@ -37,6 +68,6 @@ export default function PokemonCard({pokemon, onAttack, isBattleStarted}) {
             >
             Rage
             </button>
-        </div>
+        </>
     )
 }
