@@ -3,10 +3,11 @@ import { useReducer, useState } from 'react';
 import BattleLog from './BattleLog';
 import BattleCard from './BattleCard';
 
-import logReducer from "../utils/logReducer";
+import logReducer from "../utils/Reducers/logReducer";
 
 import { useSelectedPokemons, useSetSelectedPokemons } from '../utils/Contexts/selectedPokemonsContext.js';
 import { useStatus, useSetStatus } from "../utils/Contexts/statusContext.js";
+import { useCurrentTurn, useSetCurrentTurn } from '../utils/Contexts/currentTurnContext.js';
 
 import styles from '../styles/BattleArena.module.css';
 
@@ -25,7 +26,8 @@ export default function BattleArena({pokemons})
     const status = useStatus();
     const setStatus = useSetStatus();
 
-    const [current_turn, setCurrentTurn] = useState(0);
+    const current_turn = useCurrentTurn();
+    const setCurrentTurn = useSetCurrentTurn();
 
     const [log, dispatch] = useReducer(logReducer, []);
 
@@ -90,37 +92,18 @@ export default function BattleArena({pokemons})
         setStatus("prepare");
     }
 
-    return (
+    return (    
         <div className={styles.BattleArena}>
-            <h1 style={{
-                display: (status === "end") ? 'block' : 'none',
-                textAlign: 'center',
-                color: 'green',
-            }}><span id="pokename"></span> Won The Battle!</h1>
-            <div style={{
-                display: 'flex'
-            }}>
-                <div className={styles.Pokemon}>
-                    {selectedPokemons[0] && (
-                        <BattleCard 
-                            pokemon={selectedPokemons[0]}
-                            onAttack={handleAttack}
-                            fighting={current_turn == 0}
-                            isBattleStarted = {status === "start"}
-                        />
-                    )}
-                </div>
+            {/* <h1 style={{isplay: (status === "end") ? 'block' : 'none',textAlign: 'center',color: 'green',}}><span id="pokename"></span> Won The Battle!</h1> */}
+            <div style={{ display: 'flex' }}>
                 <BattleLog log={log}/>
-                <div className={styles.Pokemon}>
-                    {selectedPokemons[1] && (
-                        <BattleCard 
-                            pokemon={selectedPokemons[1]}
-                            onAttack={handleAttack}
-                            fighting={current_turn==1}
-                            isBattleStarted = {status === "start"}
-                        />
-                    )}
-                </div>
+                {selectedPokemons.map((pokemon) => (
+                    <BattleCard 
+                        pokemon={pokemon}
+                        onAttack={handleAttack}
+                        isBattleStarted = {status === "start"}
+                    />  
+                ))}
             </div>
             <div style={{
                 display: (status !== "prepare") ? 'block' : 'none',

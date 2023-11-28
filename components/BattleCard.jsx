@@ -1,6 +1,14 @@
+import { useSelectedPokemons } from '../utils/Contexts/selectedPokemonsContext';
+import { useCurrentTurn } from '../utils/Contexts/currentTurnContext';
+
 import styles from '../styles/BattleCard.module.css'
 
-export default function PokemonCard({pokemon, onAttack, fighting, isBattleStarted}) {
+export default function PokemonCard({pokemon, onAttack, isBattleStarted}) {
+
+    const selectedPokemons = useSelectedPokemons();
+    const currentTurn = useCurrentTurn();
+
+    const fighting = selectedPokemons[currentTurn] === pokemon;
 
     return (
         <div key={pokemon.name} className={styles.pokemonCard}>

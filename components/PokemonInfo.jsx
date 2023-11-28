@@ -2,7 +2,7 @@ import { useSetPokemonInfo } from '../utils/Contexts/pokemonInfoContext';
 
 import styles from '../styles/PokemonInfo.module.css';
 
-export default function PokemonInfo({hp, attack, onClose}) 
+export default function PokemonInfo({hp, attack}) 
 {
     const setPokemonInfo = useSetPokemonInfo();
 
